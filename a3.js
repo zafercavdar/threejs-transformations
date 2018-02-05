@@ -423,7 +423,7 @@ function updateLights() {
 ////////////////////////////////////////////////////////////////////////
 
 function initObjects() {
-
+  /*
   // torus
   torusGeometry = new THREE.TorusGeometry(1, 0.4, 10, 20);
   torus = new THREE.Mesh(torusGeometry, diffuseMaterial);
@@ -431,27 +431,6 @@ function initObjects() {
   torus.rotation.set(0, 0, 0); // rotation about x,y,z axes
   scene.add(torus);
 
-  // sphere representing light source
-  sphereGeometry = new THREE.SphereGeometry(0.3, 32, 32); // radius, segments, segments
-  sphere = new THREE.Mesh(sphereGeometry, lightMaterial);
-  sphere.position.set(light.position.x, light.position.y, light.position.z);
-  scene.add(sphere);
-
-  sphere2 = new THREE.Mesh(sphereGeometry, lightMaterial);
-  sphere2.position.set(light2.position.x, light2.position.y, light2.position.z);
-  scene.add(sphere2);
-
-  sphere3 = new THREE.Mesh(sphereGeometry, lightMaterial);
-  sphere3.position.set(light3.position.x, light3.position.y, light3.position.z);
-  scene.add(sphere3);
-
-  sphere4 = new THREE.Mesh(sphereGeometry, lightMaterial);
-  sphere4.position.set(light4.position.x, light4.position.y, light4.position.z);
-  scene.add(sphere4);
-
-  // world-frame axes
-  worldFrame = new THREE.AxisHelper(5);
-  scene.add(worldFrame);
 
   // box
   boxGeometry = new THREE.BoxGeometry(1, 1, 1); // width, height, depth
@@ -459,12 +438,6 @@ function initObjects() {
   box.position.set(-6, 0.5, -8);
   scene.add(box);
 
-  // floor
-  floorGeometry = new THREE.PlaneBufferGeometry(20, 20);
-  floor = new THREE.Mesh(floorGeometry, floorMaterial);
-  floor.position.y = 0;
-  floor.rotation.x = Math.PI / 2;
-  scene.add(floor);
 
   // cylinder
   cylinderGeometry = new THREE.CylinderGeometry(0.30, 0.30, 1, 20, 4);
@@ -505,6 +478,7 @@ function initObjects() {
   cone.position.set(-2, 0.5, -8)
   scene.add(cone);
 
+
   //  CUSTOM OBJECT
   var geom = new THREE.Geometry();
   var v0 = new THREE.Vector3(0, 0, 0);
@@ -522,6 +496,35 @@ function initObjects() {
   customObject.position.set(0, 0, -10);
   scene.add(customObject);
 
+  */
+  // sphere representing light source
+  sphereGeometry = new THREE.SphereGeometry(0.3, 32, 32); // radius, segments, segments
+  sphere = new THREE.Mesh(sphereGeometry, lightMaterial);
+  sphere.position.set(light.position.x, light.position.y, light.position.z);
+  scene.add(sphere);
+
+  sphere2 = new THREE.Mesh(sphereGeometry, lightMaterial);
+  sphere2.position.set(light2.position.x, light2.position.y, light2.position.z);
+  scene.add(sphere2);
+
+  sphere3 = new THREE.Mesh(sphereGeometry, lightMaterial);
+  sphere3.position.set(light3.position.x, light3.position.y, light3.position.z);
+  scene.add(sphere3);
+
+  sphere4 = new THREE.Mesh(sphereGeometry, lightMaterial);
+  sphere4.position.set(light4.position.x, light4.position.y, light4.position.z);
+  scene.add(sphere4);
+
+  // world-frame axes
+  worldFrame = new THREE.AxisHelper(5);
+  scene.add(worldFrame);
+  // floor
+  floorGeometry = new THREE.PlaneBufferGeometry(20, 20);
+  floor = new THREE.Mesh(floorGeometry, floorMaterial);
+  floor.position.y = 0;
+  floor.rotation.x = Math.PI / 2;
+  scene.add(floor);
+
   // laser line
   var geom = new THREE.Geometry();
   var vL0 = new THREE.Vector3(0, 0, 0);
@@ -535,6 +538,7 @@ function initObjects() {
   geom.vertices.push(new THREE.Vector3(5 + 0.00, 5 + 0.02, 5 + 0.00));
   laserLine = new THREE.Line(geom, laserLineMaterial);
   scene.add(laserLine);
+
 
   // body
   bodyGeometry = new THREE.BoxGeometry(0.25, 0.8, 0.5); // width, height, depth
@@ -690,9 +694,9 @@ function update() {
 
   if (animation) { //   update the current time of objects if  animation = true
     var kfOjbs = [trexKFobj, mydinoKFobj, newmydinoKFobj, minicooper1KFobj]
-    trexKFobj.timestep(0.02 * TIME_CONSTANT); // the big dino
     mydinoKFobj.timestep(0.02 * TIME_CONSTANT); // the blocky walking figure, your hierarchy
     if (!FLIPPING_IN_PROGRESS) {
+      trexKFobj.timestep(0.02 * TIME_CONSTANT); // the big dino
       newmydinoKFobj.timestep(0.02 * TIME_CONSTANT);
       minicooper1KFobj.timestep(0.02 * TIME_CONSTANT);
     }
