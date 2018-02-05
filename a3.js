@@ -31,9 +31,15 @@ var animation = true;
 var aniTime = 0.0;
 
 var light;
+var light2;
+var light3;
+var light4;
 var torus;
 var worldFrame;
 var sphere;
+var sphere2;
+var sphere3;
+var sphere4;
 var box;
 var mcc;
 var floor;
@@ -70,6 +76,12 @@ var tail3;
 
 var loadingManager = null;
 var RESOURCES_LOADED = false;
+
+var LASER_ENABLED = true;
+var TIME_CONSTANT = 1;
+var LIGHT_INTENSITY = 1;
+var FLIPPING_IN_PROGRESS = false;
+var FLIP_DEGREE = 0;
 
 ////////////////////////////////////////////////////////////
 // Keyframe   and   KFobj  classes
@@ -149,10 +161,66 @@ mydinoKFobj.add(new Keyframe('rest pose', 2.0, [8, 1.8, -40, 40]));
 mydinoKFobj.add(new Keyframe('rest pose', 2.5, [8, 1.8, 40, -40]));
 mydinoKFobj.add(new Keyframe('rest pose', 3.0, [8, 1, 60, -60]));
 
-// keyframs for newmydino: name, time, []
+// keyframs for newmydino: name, time, [long body x, long body y, long body z, rot y, leg theta]
 var newmydinoKFobj = new KFobj(newmydinoSetMatrices);
-newmydinoKFobj.add(new Keyframe('rest pose', 0.0, [1, 1]));
-newmydinoKFobj.add(new Keyframe('rest pose', 0.5, [1, 1]));
+newmydinoKFobj.add(new Keyframe('rest pose', 0.0, [6, 3, -6, 0, 0]));
+newmydinoKFobj.add(new Keyframe('rest pose', 0.5, [4, 3, -6, 15, 20]));
+newmydinoKFobj.add(new Keyframe('rest pose', 1.0, [2, 3, -6, 30, 40]));
+newmydinoKFobj.add(new Keyframe('rest pose', 1.5, [0, 3, -6, 45, 60]));
+newmydinoKFobj.add(new Keyframe('rest pose', 2.0, [-2, 3, -6, 60, 40]));
+newmydinoKFobj.add(new Keyframe('rest pose', 2.5, [-4, 3, -6, 75, 20]));
+newmydinoKFobj.add(new Keyframe('rest pose', 3.0, [-6, 3, -6, 90, 0]));
+
+newmydinoKFobj.add(new Keyframe('rest pose', 3.5, [-6, 3, -4, 105, 20]));
+newmydinoKFobj.add(new Keyframe('rest pose', 4.0, [-6, 3, -2, 120, 40]));
+newmydinoKFobj.add(new Keyframe('rest pose', 4.5, [-6, 3, 0, 135, 60]));
+newmydinoKFobj.add(new Keyframe('rest pose', 5.0, [-6, 3, 2, 150, 40]));
+newmydinoKFobj.add(new Keyframe('rest pose', 5.5, [-6, 3, 4, 165, 20]));
+newmydinoKFobj.add(new Keyframe('rest pose', 6.0, [-6, 3, 6, 180, 0]));
+
+newmydinoKFobj.add(new Keyframe('rest pose', 6.5, [-4, 3, 6, 195, 20]));
+newmydinoKFobj.add(new Keyframe('rest pose', 7.0, [-2, 3, 6, 210, 40]));
+newmydinoKFobj.add(new Keyframe('rest pose', 7.5, [0, 3, 6, 225, 60]));
+newmydinoKFobj.add(new Keyframe('rest pose', 8.0, [2, 3, 6, 240, 40]));
+newmydinoKFobj.add(new Keyframe('rest pose', 8.5, [4, 3, 6, 255, 20]));
+newmydinoKFobj.add(new Keyframe('rest pose', 9.0, [6, 3, 6, 270, 0]));
+
+newmydinoKFobj.add(new Keyframe('rest pose', 9.5, [6, 3, 4, 285, 20]));
+newmydinoKFobj.add(new Keyframe('rest pose', 10.0, [6, 3, 2, 300, 40]));
+newmydinoKFobj.add(new Keyframe('rest pose', 10.5, [6, 3, 0, 315, 60]));
+newmydinoKFobj.add(new Keyframe('rest pose', 11.0, [6, 3, -2, 330, 40]));
+newmydinoKFobj.add(new Keyframe('rest pose', 11.5, [6, 3, -4, 345, 20]));
+newmydinoKFobj.add(new Keyframe('rest pose', 12.0, [6, 3, -6, 360, 0]));
+
+var minicooper1KFobj = new KFobj(minicooper1SetMatrices);
+minicooper1KFobj.add(new Keyframe('rest pose', 0.0, [10, 0, -6, 0]));
+minicooper1KFobj.add(new Keyframe('rest pose', 0.5, [8, 0, -6, 5]));
+minicooper1KFobj.add(new Keyframe('rest pose', 1.0, [6, 0, -6, 10]));
+minicooper1KFobj.add(new Keyframe('rest pose', 1.5, [4, 0, -6, 15]));
+minicooper1KFobj.add(new Keyframe('rest pose', 2.0, [2, 0, -6, 20]));
+minicooper1KFobj.add(new Keyframe('rest pose', 2.5, [0, 0, -6, 25]));
+minicooper1KFobj.add(new Keyframe('rest pose', 3.0, [-2, 0, -6, 30]));
+minicooper1KFobj.add(new Keyframe('rest pose', 3.5, [-4, 0, -6, 35]));
+minicooper1KFobj.add(new Keyframe('rest pose', 4.0, [-6, 0, -6, 90]));
+
+minicooper1KFobj.add(new Keyframe('rest pose', 4.5, [-6, 0, -4, 95]));
+minicooper1KFobj.add(new Keyframe('rest pose', 5.0, [-6, 0, -2, 100]));
+minicooper1KFobj.add(new Keyframe('rest pose', 5.5, [-6, 0, 0, 105]));
+minicooper1KFobj.add(new Keyframe('rest pose', 6.0, [-6, 0, 2, 110]));
+minicooper1KFobj.add(new Keyframe('rest pose', 6.5, [-6, 0, 4, 115]));
+minicooper1KFobj.add(new Keyframe('rest pose', 7.0, [-6, 0, 6, 180]));
+
+minicooper1KFobj.add(new Keyframe('rest pose', 7.5, [-4, 0, 6, 185]));
+minicooper1KFobj.add(new Keyframe('rest pose', 8.0, [-1.5, 0, 6, 190]));
+minicooper1KFobj.add(new Keyframe('rest pose', 8.5, [1, 0, 6, 195]));
+minicooper1KFobj.add(new Keyframe('rest pose', 9.0, [3.5, 0, 6, 200]));
+minicooper1KFobj.add(new Keyframe('rest pose', 9.5, [6, 0, 6, 205]));
+minicooper1KFobj.add(new Keyframe('rest pose', 10.0, [8.5, 0, 6, 270]));
+
+minicooper1KFobj.add(new Keyframe('rest pose', 10.5, [10, 0, 4, 275]));
+minicooper1KFobj.add(new Keyframe('rest pose', 11.0, [10, 0, 0, 285]));
+minicooper1KFobj.add(new Keyframe('rest pose', 11.5, [10, 0, -4, 295]));
+minicooper1KFobj.add(new Keyframe('rest pose', 12.0, [10, 0, -6, 360]));
 
 
 // optional:   allow avar indexing by name
@@ -172,6 +240,7 @@ var diffuseMaterial;
 var diffuseMaterialB;
 var diffuseMaterial2;
 var basicMaterial;
+var lightMaterial;
 var normalShaderMaterial;
 var dinoMaterial;
 var floorMaterial;
@@ -179,6 +248,21 @@ var shaderFiles;
 
 dinoGreenMaterial = new THREE.MeshLambertMaterial({
   color: 0x4fff4f
+});
+dinoDarkGreenMaterial = new THREE.MeshLambertMaterial({
+  color: 0x006400
+});
+dinoLightRedMaterial = new THREE.MeshLambertMaterial({
+  color: 0xff6666
+});
+dinoRedMaterial = new THREE.MeshLambertMaterial({
+  color: 0xff0000
+});
+dinoDarkRedMaterial = new THREE.MeshLambertMaterial({
+  color: 0x800000
+});
+dinoBlueMaterial = new THREE.MeshLambertMaterial({
+  color: 0x33A1DE
 });
 laserLineMaterial = new THREE.LineBasicMaterial({
   color: 0xff0000
@@ -197,6 +281,9 @@ diffuseMaterial2 = new THREE.MeshLambertMaterial({
 basicMaterial = new THREE.MeshBasicMaterial({
   color: 0xff0000
 });
+lightMaterial = new THREE.MeshBasicMaterial({
+  color: 0x05EDFF
+})
 
 floorTexture = new THREE.ImageUtils.loadTexture('images/floor.jpg');
 floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
@@ -215,6 +302,24 @@ new THREE.SourceLoader().load(shaderFiles, function(shaders) {
   normalShaderMaterial.vertexShader = shaders['glsl/armadillo.vs.glsl'];
   normalShaderMaterial.fragmentShader = shaders['glsl/armadillo.fs.glsl'];
 })
+
+/*
+var backgroundMesh, backgroundScene, backgroundCamera;
+var backgrounTexture = new THREE.ImageUtils.loadTexture('images/floor.jpg');
+backgroundMesh = new THREE.Mesh(
+  new THREE.PlaneGeometry(100, 100, 0),
+    new THREE.MeshBasicMaterial({
+    map: backgrounTexture
+  })
+);
+backgroundMesh.material.depthTest = false;
+backgroundMesh.material.depthWrite = false;
+
+backgroundScene = new THREE.Scene();
+backgroundCamera = new THREE.Camera();
+backgroundScene.add( backgroundCamera );
+backgroundScene.add( backgroundMesh );
+*/
 
 var meshes = {}; // Meshes index
 
@@ -258,11 +363,28 @@ function initCamera() {
 
 function initLights() {
   light = new THREE.PointLight(0xffffff);
-  light.position.set(0, 4, 20);
+  light.position.set(0, 4, 10);
   scene.add(light);
+  light2 = new THREE.PointLight(0xffffff);
+  light2.position.set(0, 4, -10);
+  scene.add(light2);
+  light3 = new THREE.PointLight(0xffffff);
+  light3.position.set(10, 4, 0);
+  scene.add(light3);
+  light4 = new THREE.PointLight(0xffffff);
+  light4.position.set(-10, 4, 0);
+  scene.add(light4);
   ambientLight = new THREE.AmbientLight(0x606060);
   scene.add(ambientLight);
-};
+}
+
+function updateLights() {
+  light.intensity = LIGHT_INTENSITY;
+  light2.intensity = LIGHT_INTENSITY;
+  light3.intensity = LIGHT_INTENSITY;
+  light4.intensity = LIGHT_INTENSITY;
+
+}
 
 ////////////////////////////////////////////////////////////////////////
 // initObjects():  setup up scene
@@ -279,10 +401,21 @@ function initObjects() {
 
   // sphere representing light source
   sphereGeometry = new THREE.SphereGeometry(0.3, 32, 32); // radius, segments, segments
-  sphere = new THREE.Mesh(sphereGeometry, basicMaterial);
-  sphere.position.set(0, 4, 2);
+  sphere = new THREE.Mesh(sphereGeometry, lightMaterial);
   sphere.position.set(light.position.x, light.position.y, light.position.z);
   scene.add(sphere);
+
+  sphere2 = new THREE.Mesh(sphereGeometry, lightMaterial);
+  sphere2.position.set(light2.position.x, light2.position.y, light2.position.z);
+  scene.add(sphere2);
+
+  sphere3 = new THREE.Mesh(sphereGeometry, lightMaterial);
+  sphere3.position.set(light3.position.x, light3.position.y, light3.position.z);
+  scene.add(sphere3);
+
+  sphere4 = new THREE.Mesh(sphereGeometry, lightMaterial);
+  sphere4.position.set(light4.position.x, light4.position.y, light4.position.z);
+  scene.add(sphere4);
 
   // world-frame axes
   worldFrame = new THREE.AxisHelper(5);
@@ -383,38 +516,38 @@ function initObjects() {
   scene.add(rightLeg);
 
   // new mydino
-  longBodyGeometry = new THREE.BoxGeometry(2.5, 1.2, 0.5);
+  longBodyGeometry = new THREE.BoxGeometry(3, 1.2, 0.5);
   shortBodyGeometry = new THREE.BoxGeometry(1.5, 1.2, 0.5);
   topLegGeometry = new THREE.BoxGeometry(0.8, 0.25, 0.15);
   mediumLegGeometry = new THREE.BoxGeometry(1, 0.20, 0.15);
-  bottomLegGeometry = new THREE.BoxGeometry(0.3, 0.20, 0.15);
+  eyeGeometry = new THREE.SphereGeometry(0.2, 32, 32);
   armGeometry = new THREE.BoxGeometry(0.9, 0.25, 0.1);
   wristGeometry = new THREE.BoxGeometry(0.25, 0.1, 0.1);
   neckGeometry = new THREE.CylinderGeometry(0.25, 0.25, 1.5, 32, 32);
-  tail1Geometry = new THREE.BoxGeometry(1.6, 0.1, 0.05);
-  tail2Geometry = new THREE.BoxGeometry(1.3, 0.1, 0.05);
-  tail3Geometry = new THREE.BoxGeometry(0.2, 0.1, 0.05);
+  tail1Geometry = new THREE.BoxGeometry(1.9, 0.1, 0.05);
+  tail2Geometry = new THREE.BoxGeometry(1.5, 0.1, 0.05);
+  tail3Geometry = new THREE.BoxGeometry(0.4, 0.1, 0.05);
   headGeometry = new THREE.SphereGeometry(0.7, 32, 32);
 
-  longBody = new THREE.Mesh(longBodyGeometry, dinoGreenMaterial);
-  shortBody = new THREE.Mesh(shortBodyGeometry, dinoGreenMaterial);
-  leftArm = new THREE.Mesh(armGeometry, dinoGreenMaterial);
-  leftWrist = new THREE.Mesh(wristGeometry, dinoGreenMaterial);
-  rightArm = new THREE.Mesh(armGeometry, dinoGreenMaterial);
-  rightWrist = new THREE.Mesh(wristGeometry, dinoGreenMaterial);
-  leftLeg1 = new THREE.Mesh(topLegGeometry, dinoGreenMaterial);
-  leftLeg2 = new THREE.Mesh(mediumLegGeometry, dinoGreenMaterial);
-  leftLeg3 = new THREE.Mesh(bottomLegGeometry, dinoGreenMaterial);
-  rightLeg1 = new THREE.Mesh(topLegGeometry, dinoGreenMaterial);
-  rightLeg2 = new THREE.Mesh(mediumLegGeometry, dinoGreenMaterial);
-  rightLeg3 = new THREE.Mesh(bottomLegGeometry, dinoGreenMaterial);
-  neck = new THREE.Mesh(neckGeometry, dinoGreenMaterial);
-  head = new THREE.Mesh(headGeometry, dinoGreenMaterial);
-  tail1 = new THREE.Mesh(tail1Geometry, dinoGreenMaterial);
-  tail2 = new THREE.Mesh(tail2Geometry, dinoGreenMaterial);
-  tail3 = new THREE.Mesh(tail3Geometry, dinoGreenMaterial);
+  longBody = new THREE.Mesh(longBodyGeometry, dinoBlueMaterial);
+  shortBody = new THREE.Mesh(shortBodyGeometry, dinoDarkGreenMaterial);
+  leftArm = new THREE.Mesh(armGeometry, dinoBlueMaterial);
+  leftWrist = new THREE.Mesh(wristGeometry, dinoDarkGreenMaterial);
+  rightArm = new THREE.Mesh(armGeometry, dinoBlueMaterial);
+  rightWrist = new THREE.Mesh(wristGeometry, dinoDarkGreenMaterial);
+  leftLeg1 = new THREE.Mesh(topLegGeometry, dinoBlueMaterial);
+  leftLeg2 = new THREE.Mesh(mediumLegGeometry, dinoDarkGreenMaterial);
+  rightLeg1 = new THREE.Mesh(topLegGeometry, dinoBlueMaterial);
+  rightLeg2 = new THREE.Mesh(mediumLegGeometry, dinoDarkGreenMaterial);
+  neck = new THREE.Mesh(neckGeometry, dinoBlueMaterial);
+  head = new THREE.Mesh(headGeometry, dinoDarkGreenMaterial);
+  leftEye = new THREE.Mesh(eyeGeometry, dinoDarkRedMaterial);
+  rightEye = new THREE.Mesh(eyeGeometry, dinoDarkRedMaterial);
+  tail1 = new THREE.Mesh(tail1Geometry, dinoLightRedMaterial);
+  tail2 = new THREE.Mesh(tail2Geometry, dinoRedMaterial);
+  tail3 = new THREE.Mesh(tail3Geometry, dinoDarkRedMaterial);
 
-  dinoParts = [longBody, shortBody, leftArm, leftWrist, rightArm, rightWrist, leftLeg1, leftLeg2, leftLeg3, rightLeg1, rightLeg2, rightLeg3, neck, head, tail1, tail2, tail3];
+  dinoParts = [longBody, shortBody, leftArm, leftWrist, rightArm, rightWrist, leftLeg1, leftLeg2, leftEye, rightLeg1, rightLeg2, rightEye, neck, head, tail1, tail2, tail3];
   for (var i in dinoParts) {
     scene.add(dinoParts[i]);
   }
@@ -432,7 +565,7 @@ function initFileObjects() {
     //teapot: {obj:"obj/teapot.obj", mtl: diffuseMaterial, mesh: null	},
     //armadillo: {obj:"obj/armadillo.obj", mtl: diffuseMaterial, mesh: null },
     //	horse: {obj:"obj/horse.obj", mtl: diffuseMaterial, mesh: null },
-    //minicooper: {obj:"obj/minicooper.obj", mtl: diffuseMaterial, mesh: null },
+    minicooper: {obj:"obj/minicooper.obj", mtl: diffuseMaterial, mesh: null },
     trex: {
       obj: "obj/trex.obj",
       mtl: normalShaderMaterial,
@@ -484,12 +617,28 @@ function checkKeyboard() {
     console.log('Reset!');
     trexKFobj.reset();
     mydinoKFobj.reset();
+    newmydinoKFobj.reset();
+    minicooper1KFobj.reset();
   } else if (keyboard.pressed("o")) {
     camera.fov += 0.5;
     camera.updateProjectionMatrix(); // get three.js to recopute   M_proj
   } else if (keyboard.pressed("p")) {
     camera.fov -= 0.5;
     camera.updateProjectionMatrix(); // get three.js to recompute  M_proj
+  } else if (keyboard.pressed("l")) {
+    LASER_ENABLED = !LASER_ENABLED;
+  } else if (keyboard.pressed("t")) {
+    TIME_CONSTANT *= -1;
+  } else if (keyboard.pressed("q")) {
+    LIGHT_INTENSITY = Math.min(LIGHT_INTENSITY + 0.01, 1);
+    console.log(LIGHT_INTENSITY);
+    updateLights();
+  } else if (keyboard.pressed("w")) {
+    LIGHT_INTENSITY = Math.max(LIGHT_INTENSITY - 0.01, 0);
+    console.log(LIGHT_INTENSITY);
+    updateLights();
+  } else if(keyboard.pressed("f")) {
+    FLIPPING_IN_PROGRESS = true;
   }
 }
 
@@ -508,10 +657,20 @@ function update() {
   /////////// animated objects ////////////////
 
   if (animation) { //   update the current time of objects if  animation = true
-    trexKFobj.timestep(0.02); // the big dino
-    mydinoKFobj.timestep(0.02); // the blocky walking figure, your hierarchy
-    newmydinoKFobj.timestep(0.02);
-    aniTime += 0.02; // update global time
+    var kfOjbs = [trexKFobj, mydinoKFobj, newmydinoKFobj, minicooper1KFobj]
+    trexKFobj.timestep(0.02 * TIME_CONSTANT); // the big dino
+    mydinoKFobj.timestep(0.02 * TIME_CONSTANT); // the blocky walking figure, your hierarchy
+    if (!FLIPPING_IN_PROGRESS) {
+      newmydinoKFobj.timestep(0.02 * TIME_CONSTANT);
+      minicooper1KFobj.timestep(0.02 * TIME_CONSTANT);
+    }
+    aniTime += 0.02 * TIME_CONSTANT; // update global time
+    for (kfObjIndex in kfOjbs) {
+      var kfObj = kfOjbs[kfObjIndex]
+      if (kfObj.currTime < 0) {
+        kfObj.currTime += kfObj.maxTime;
+      }
+    }
   }
 
   var trexAvars = trexKFobj.getAvars(); // interpolate avars
@@ -523,10 +682,150 @@ function update() {
   var newmydinoAvars = newmydinoKFobj.getAvars();
   newmydinoKFobj.setMatricesFunc(newmydinoAvars);
 
-  laserUpdate();
+  var minicooper1Avars = minicooper1KFobj.getAvars();
+  minicooper1KFobj.setMatricesFunc(minicooper1Avars);
+
+  if (LASER_ENABLED) {
+    laserLine.visible = true;
+    laserUpdate();
+  } else {
+    laserLine.visible = false;
+  }
+
+  if (FLIPPING_IN_PROGRESS) {
+    flipDino(newmydinoAvars);
+  }
 
   requestAnimationFrame(update);
+  //renderer.clear();
+  //renderer.render( backgroundScene, backgroundCamera );
   renderer.render(scene, camera);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////
+//  flipDino()
+///////////////////////////////////////////////////////////////////////////////////////
+function flipDino(avars) {
+  var longBody = dinoParts[0];
+  longBody.matrixAutoUpdate = false;
+  var unitRotation = 2;
+  longBody.matrix.multiply(new THREE.Matrix4().makeRotationZ(-unitRotation * Math.PI / 180));
+  longBody.updateMatrixWorld();
+
+  shortBody.matrixAutoUpdate = false;
+  shortBody.matrix.copy(longBody.matrix);
+  shortBody.matrix.multiply(new THREE.Matrix4().makeTranslation(longBody.geometry.parameters.width / 2, 0, 0));
+  shortBody.matrix.multiply(new THREE.Matrix4().makeRotationZ(-1 * Math.PI / 18 + (15 * Math.PI / 180)));
+  shortBody.matrix.multiply(new THREE.Matrix4().makeTranslation(shortBody.geometry.parameters.width / 2 - 0.1, 0, 0));
+  shortBody.updateMatrixWorld();
+
+  neck.matrixAutoUpdate = false;
+  neck.matrix.copy(longBody.matrix);
+  neck.matrix.multiply(new THREE.Matrix4().makeTranslation(-1 * longBody.geometry.parameters.width / 2, 0, 0));
+  neck.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI / 24 + Math.PI / 3));
+  neck.matrix.multiply(new THREE.Matrix4().makeTranslation(0, neck.geometry.parameters.height / 2 - 0.15, 0));
+  neck.updateMatrixWorld();
+
+  head.matrixAutoUpdate = false;
+  head.matrix.copy(neck.matrix);
+  head.matrix.multiply(new THREE.Matrix4().makeTranslation(0, neck.geometry.parameters.height / 2, 0));
+  head.updateMatrixWorld();
+
+  leftEye.matrixAutoUpdate = false;
+  leftEye.matrix.copy(head.matrix);
+  var d = head.geometry.parameters.radius / Math.sqrt(3);
+  leftEye.matrix.multiply(new THREE.Matrix4().makeTranslation(-d, d, d));
+  leftEye.updateMatrixWorld();
+
+  rightEye.matrixAutoUpdate = false;
+  rightEye.matrix.copy(head.matrix);
+  var d = head.geometry.parameters.radius / Math.sqrt(3);
+  rightEye.matrix.multiply(new THREE.Matrix4().makeTranslation(-d, d, -d));
+  rightEye.updateMatrixWorld();
+
+  leftArm.matrixAutoUpdate = false;
+  leftArm.matrix.copy(longBody.matrix);
+  leftArm.matrix.multiply(new THREE.Matrix4().makeTranslation(-1 * longBody.geometry.parameters.width / 4, 0, 0));
+  leftArm.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI / 2));
+  leftArm.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.5 * (leftArm.geometry.parameters.width + longBody.geometry.parameters.height), 0, 0.5 * (longBody.geometry.parameters.depth - leftArm.geometry.parameters.depth)));
+  leftArm.updateMatrixWorld();
+
+  rightArm.matrixAutoUpdate = false;
+  rightArm.matrix.copy(longBody.matrix);
+  rightArm.matrix.multiply(new THREE.Matrix4().makeTranslation(-1 * longBody.geometry.parameters.width / 4, 0, 0));
+  rightArm.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI / 2));
+  rightArm.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.5 * (rightArm.geometry.parameters.width + longBody.geometry.parameters.height), 0, -0.5 * (longBody.geometry.parameters.depth - rightArm.geometry.parameters.depth)));
+  rightArm.updateMatrixWorld();
+
+  leftWrist.matrixAutoUpdate = false;
+  leftWrist.matrix.copy(leftArm.matrix);
+  leftWrist.matrix.multiply(new THREE.Matrix4().makeTranslation(-1 * leftArm.geometry.parameters.width / 2, 0, 0));
+  leftWrist.matrix.multiply(new THREE.Matrix4().makeRotationZ(-1 * Math.PI / 12));
+  leftWrist.matrix.multiply(new THREE.Matrix4().makeTranslation(-1 * leftWrist.geometry.parameters.width / 2, 0, 0));
+  leftWrist.updateMatrixWorld();
+
+  rightWrist.matrixAutoUpdate = false;
+  rightWrist.matrix.copy(rightArm.matrix);
+  rightWrist.matrix.multiply(new THREE.Matrix4().makeTranslation(-1 * rightArm.geometry.parameters.width / 2, 0, 0));
+  rightWrist.matrix.multiply(new THREE.Matrix4().makeRotationZ(-1 * Math.PI / 12));
+  rightWrist.matrix.multiply(new THREE.Matrix4().makeTranslation(-1 * rightWrist.geometry.parameters.width / 2, 0, 0));
+  rightWrist.updateMatrixWorld();
+
+  leftLeg1.matrixAutoUpdate = false;
+  leftLeg1.matrix.copy(shortBody.matrix);
+  leftLeg1.matrix.multiply(new THREE.Matrix4().makeTranslation(0.5 * (shortBody.geometry.parameters.width - leftLeg1.geometry.parameters.height) - 0.18, 0, 0));
+  leftLeg1.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI / 2 - Math.PI / 12 - avars[4] * (Math.PI / 180)));
+  leftLeg1.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.5 * (shortBody.geometry.parameters.height + leftLeg1.geometry.parameters.width) + 0.1, 0, 0.5 * (shortBody.geometry.parameters.depth - leftLeg1.geometry.parameters.depth)));
+  leftLeg1.updateMatrixWorld();
+
+  rightLeg1.matrixAutoUpdate = false;
+  rightLeg1.matrix.copy(shortBody.matrix);
+  rightLeg1.matrix.multiply(new THREE.Matrix4().makeTranslation(0.5 * (shortBody.geometry.parameters.width - rightLeg1.geometry.parameters.height) - 0.18, 0, 0));
+  rightLeg1.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI / 2 - Math.PI / 12 + avars[4] * (Math.PI / 180)));
+  rightLeg1.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.5 * (shortBody.geometry.parameters.height + rightLeg1.geometry.parameters.width) + 0.1, 0, -0.5 * (shortBody.geometry.parameters.depth - rightLeg1.geometry.parameters.depth)));
+  rightLeg1.updateMatrixWorld();
+
+  leftLeg2.matrixAutoUpdate = false;
+  leftLeg2.matrix.copy(leftLeg1.matrix);
+  leftLeg2.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.5 * (leftLeg1.geometry.parameters.width - leftLeg2.geometry.parameters.height), 0, 0));
+  leftLeg2.matrix.multiply(new THREE.Matrix4().makeRotationZ((Math.PI / 8) + avars[4] * (Math.PI / 180)));
+  leftLeg2.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.5 * (leftLeg2.geometry.parameters.width), 0, 0));
+  leftLeg2.updateMatrixWorld();
+
+  rightLeg2.matrixAutoUpdate = false;
+  rightLeg2.matrix.copy(rightLeg1.matrix);
+  rightLeg2.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.5 * (rightLeg1.geometry.parameters.width - rightLeg2.geometry.parameters.height), 0, 0));
+  rightLeg2.matrix.multiply(new THREE.Matrix4().makeRotationZ((Math.PI / 8) - avars[4] * (Math.PI / 180)));
+  rightLeg2.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.5 * (rightLeg2.geometry.parameters.width), 0, 0));
+  rightLeg2.updateMatrixWorld();
+
+  tail1.matrixAutoUpdate = false;
+  tail1.matrix.copy(shortBody.matrix);
+  tail1.matrix.multiply(new THREE.Matrix4().makeTranslation(shortBody.geometry.parameters.width / 2 - 0.1, 0, 0));
+  tail1.matrix.multiply(new THREE.Matrix4().makeRotationZ(-Math.PI / 12));
+  tail1.matrix.multiply(new THREE.Matrix4().makeTranslation(tail1.geometry.parameters.width / 2, 0, 0));
+  tail1.updateMatrixWorld();
+
+  tail2.matrixAutoUpdate = false;
+  tail2.matrix.copy(tail1.matrix);
+  tail2.matrix.multiply(new THREE.Matrix4().makeTranslation(tail1.geometry.parameters.width / 2 - 0.05, 0, 0));
+  tail2.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI / 12));
+  tail2.matrix.multiply(new THREE.Matrix4().makeTranslation(tail2.geometry.parameters.width / 2 - 0.1, 0, 0));
+  tail2.updateMatrixWorld();
+
+  tail3.matrixAutoUpdate = false;
+  tail3.matrix.copy(tail2.matrix);
+  tail3.matrix.multiply(new THREE.Matrix4().makeTranslation((tail2.geometry.parameters.width) / 2 - 0.05, 0, 0));
+  tail3.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI / 12));
+  tail3.matrix.multiply(new THREE.Matrix4().makeTranslation((tail3.geometry.parameters.width) / 2, -0.005, 0));
+  tail3.updateMatrixWorld();
+
+  FLIP_DEGREE += unitRotation;
+  if (FLIP_DEGREE == 360) {
+    FLIP_DEGREE = 0;
+    FLIPPING_IN_PROGRESS = false;
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -535,21 +834,25 @@ function update() {
 
 function laserUpdate() {
 
-  var trexEyeLocal = new THREE.Vector3(0, 1.2, -1.9);
-  var trex2 = meshes["trex2"]; //   reference to the Object
-  var trexEyeWorld = trexEyeLocal.applyMatrix4(trex2.matrix); // this computes  trex2.matrix * trexEyeLocal (with h=1)
+  // var trexEyeLocal = new THREE.Vector3(0, 1.2, -1.9);
+  var cooperEyeLocal = new THREE.Vector3(0, -75, 30);
+  //var trex2 = meshes["trex2"]; //   reference to the Object
+  var cooper = meshes['minicooper1']
+  //var trexEyeWorld = trexEyeLocal.applyMatrix4(trex2.matrix); // this computes  trex2.matrix * trexEyeLocal (with h=1)
+  var cooperFrontWorld = cooperEyeLocal.applyMatrix4(cooper.matrix);
 
-  var mydinoWorld = new THREE.Vector3(10, 0, 3);
+  //var mydinoWorld = new THREE.Vector3(10, 0, 3);
+  var newDinoWorld = dinoParts[0].matrix.getPosition();
 
   var offset = [new THREE.Vector3(0, 0, 0), new THREE.Vector3(0.02, 0, 0), new THREE.Vector3(0, 0.02, 0)];
   for (var n = 0; n < 3; n++) { // laserLine consists of three line segements, slightly offset (more visible)
-    laserLine.geometry.vertices[n * 2].x = trexEyeWorld.x + offset[n].x;
-    laserLine.geometry.vertices[n * 2].y = trexEyeWorld.y + offset[n].y;
-    laserLine.geometry.vertices[n * 2].z = trexEyeWorld.z + offset[n].z;
+    laserLine.geometry.vertices[n * 2].x = cooperFrontWorld.x + offset[n].x;
+    laserLine.geometry.vertices[n * 2].y = cooperFrontWorld.y + offset[n].y;
+    laserLine.geometry.vertices[n * 2].z = cooperFrontWorld.z + offset[n].z;
 
-    laserLine.geometry.vertices[n * 2 + 1].x = mydinoWorld.x + offset[n].x;
-    laserLine.geometry.vertices[n * 2 + 1].y = mydinoWorld.y + offset[n].y;
-    laserLine.geometry.vertices[n * 2 + 1].z = mydinoWorld.z + offset[n].z;
+    laserLine.geometry.vertices[n * 2 + 1].x = newDinoWorld.x + offset[n].x;
+    laserLine.geometry.vertices[n * 2 + 1].y = newDinoWorld.y + offset[n].y;
+    laserLine.geometry.vertices[n * 2 + 1].z = newDinoWorld.z + offset[n].z;
   }
   laserLine.geometry.verticesNeedUpdate = true;
 }
@@ -599,87 +902,144 @@ function mydinoSetMatrices(avars) {
 ///////////////////////////////////////////////////////////////////////////////////////
 
 function newmydinoSetMatrices(avars) {
-  longBody.matrixAutoUpdate = false;
-  longBody.matrix.identity(); // root of the hierarchy
-  longBody.matrix.multiply(new THREE.Matrix4().makeTranslation(3, 2.5, -3));
-  longBody.matrix.multiply(new THREE.Matrix4().makeRotationZ(-1 * Math.PI / 24));
-  longBody.updateMatrixWorld();
+  if (!FLIPPING_IN_PROGRESS) {
+    longBody.matrixAutoUpdate = false;
+    longBody.matrix.identity(); // root of the hierarchy
+    longBody.matrix.multiply(new THREE.Matrix4().makeTranslation(avars[0], avars[1], avars[2]));
+    longBody.matrix.multiply(new THREE.Matrix4().makeRotationY(avars[3] * Math.PI / 180));
+    longBody.matrix.multiply(new THREE.Matrix4().makeRotationZ(-27 * Math.PI / 180));
+    longBody.updateMatrixWorld();
 
-  shortBody.matrixAutoUpdate = false;
-  shortBody.matrix.copy(longBody.matrix);
-  shortBody.matrix.multiply(new THREE.Matrix4().makeTranslation(longBody.geometry.parameters.width / 2, 0, 0));
-  shortBody.matrix.multiply(new THREE.Matrix4().makeRotationZ(-1 * Math.PI / 18));
-  shortBody.matrix.multiply(new THREE.Matrix4().makeTranslation(shortBody.geometry.parameters.width / 2 - 0.1, 0, 0));
-  shortBody.updateMatrixWorld();
+    shortBody.matrixAutoUpdate = false;
+    shortBody.matrix.copy(longBody.matrix);
+    shortBody.matrix.multiply(new THREE.Matrix4().makeTranslation(longBody.geometry.parameters.width / 2, 0, 0));
+    shortBody.matrix.multiply(new THREE.Matrix4().makeRotationZ(-1 * Math.PI / 18 + (15 * Math.PI / 180)));
+    shortBody.matrix.multiply(new THREE.Matrix4().makeTranslation(shortBody.geometry.parameters.width / 2 - 0.1, 0, 0));
+    shortBody.updateMatrixWorld();
 
-  neck.matrixAutoUpdate = false;
-  neck.matrix.copy(longBody.matrix);
-  neck.matrix.multiply(new THREE.Matrix4().makeTranslation(-1 * longBody.geometry.parameters.width / 2, 0, 0));
-  neck.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI / 24 + Math.PI / 3));
-  neck.matrix.multiply(new THREE.Matrix4().makeTranslation(0, neck.geometry.parameters.height / 2 - 0.15, 0));
-  neck.updateMatrixWorld();
+    neck.matrixAutoUpdate = false;
+    neck.matrix.copy(longBody.matrix);
+    neck.matrix.multiply(new THREE.Matrix4().makeTranslation(-1 * longBody.geometry.parameters.width / 2, 0, 0));
+    neck.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI / 24 + Math.PI / 3));
+    neck.matrix.multiply(new THREE.Matrix4().makeTranslation(0, neck.geometry.parameters.height / 2 - 0.15, 0));
+    neck.updateMatrixWorld();
 
-  head.matrixAutoUpdate = false;
-  head.matrix.copy(neck.matrix);
-  head.matrix.multiply(new THREE.Matrix4().makeTranslation(0, neck.geometry.parameters.height / 2, 0));
-  head.updateMatrixWorld();
+    head.matrixAutoUpdate = false;
+    head.matrix.copy(neck.matrix);
+    head.matrix.multiply(new THREE.Matrix4().makeTranslation(0, neck.geometry.parameters.height / 2, 0));
+    head.updateMatrixWorld();
 
-  leftArm.matrixAutoUpdate = false;
-  leftArm.matrix.copy(longBody.matrix);
-  leftArm.matrix.multiply(new THREE.Matrix4().makeTranslation(-1 * longBody.geometry.parameters.width / 4, 0, 0));
-  leftArm.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI / 2));
-  leftArm.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.5 * (leftArm.geometry.parameters.width + longBody.geometry.parameters.height), 0, 0.5 * (longBody.geometry.parameters.depth - leftArm.geometry.parameters.depth)));
-  leftArm.updateMatrixWorld();
+    leftEye.matrixAutoUpdate = false;
+    leftEye.matrix.copy(head.matrix);
+    var d = head.geometry.parameters.radius / Math.sqrt(3);
+    leftEye.matrix.multiply(new THREE.Matrix4().makeTranslation(-d, d, d));
+    leftEye.updateMatrixWorld();
 
-  rightArm.matrixAutoUpdate = false;
-  rightArm.matrix.copy(longBody.matrix);
-  rightArm.matrix.multiply(new THREE.Matrix4().makeTranslation(-1 * longBody.geometry.parameters.width / 4, 0, 0));
-  rightArm.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI / 2));
-  rightArm.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.5 * (rightArm.geometry.parameters.width + longBody.geometry.parameters.height), 0, -0.5 * (longBody.geometry.parameters.depth - rightArm.geometry.parameters.depth)));
-  rightArm.updateMatrixWorld();
+    rightEye.matrixAutoUpdate = false;
+    rightEye.matrix.copy(head.matrix);
+    var d = head.geometry.parameters.radius / Math.sqrt(3);
+    rightEye.matrix.multiply(new THREE.Matrix4().makeTranslation(-d, d, -d));
+    rightEye.updateMatrixWorld();
 
-  leftWrist.matrixAutoUpdate = false;
-  leftWrist.matrix.copy(leftArm.matrix);
-  leftWrist.matrix.multiply(new THREE.Matrix4().makeTranslation(-1 * leftArm.geometry.parameters.width / 2, 0, 0));
-  leftWrist.matrix.multiply(new THREE.Matrix4().makeRotationZ(-1 * Math.PI / 12));
-  leftWrist.matrix.multiply(new THREE.Matrix4().makeTranslation(-1 * leftWrist.geometry.parameters.width / 2, 0, 0));
-  leftWrist.updateMatrixWorld();
+    leftArm.matrixAutoUpdate = false;
+    leftArm.matrix.copy(longBody.matrix);
+    leftArm.matrix.multiply(new THREE.Matrix4().makeTranslation(-1 * longBody.geometry.parameters.width / 4, 0, 0));
+    leftArm.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI / 2));
+    leftArm.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.5 * (leftArm.geometry.parameters.width + longBody.geometry.parameters.height), 0, 0.5 * (longBody.geometry.parameters.depth - leftArm.geometry.parameters.depth)));
+    leftArm.updateMatrixWorld();
 
-  rightWrist.matrixAutoUpdate = false;
-  rightWrist.matrix.copy(rightArm.matrix);
-  rightWrist.matrix.multiply(new THREE.Matrix4().makeTranslation(-1 * rightArm.geometry.parameters.width / 2, 0, 0));
-  rightWrist.matrix.multiply(new THREE.Matrix4().makeRotationZ(-1 * Math.PI / 12));
-  rightWrist.matrix.multiply(new THREE.Matrix4().makeTranslation(-1 * rightWrist.geometry.parameters.width / 2, 0, 0));
-  rightWrist.updateMatrixWorld();
+    rightArm.matrixAutoUpdate = false;
+    rightArm.matrix.copy(longBody.matrix);
+    rightArm.matrix.multiply(new THREE.Matrix4().makeTranslation(-1 * longBody.geometry.parameters.width / 4, 0, 0));
+    rightArm.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI / 2));
+    rightArm.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.5 * (rightArm.geometry.parameters.width + longBody.geometry.parameters.height), 0, -0.5 * (longBody.geometry.parameters.depth - rightArm.geometry.parameters.depth)));
+    rightArm.updateMatrixWorld();
 
-  leftLeg1.matrixAutoUpdate = false;
-  leftLeg1.matrix.copy(shortBody.matrix);
-  leftLeg1.matrix.multiply(new THREE.Matrix4().makeTranslation(0.5 * (shortBody.geometry.parameters.width - leftLeg1.geometry.parameters.height) - 0.18, 0, 0));
-  leftLeg1.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI / 2 - Math.PI / 12));
-  leftLeg1.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.5 * (shortBody.geometry.parameters.height + leftLeg1.geometry.parameters.width) + 0.1, 0, 0.5 * (shortBody.geometry.parameters.depth - leftLeg1.geometry.parameters.depth)));
-  leftLeg1.updateMatrixWorld();
+    leftWrist.matrixAutoUpdate = false;
+    leftWrist.matrix.copy(leftArm.matrix);
+    leftWrist.matrix.multiply(new THREE.Matrix4().makeTranslation(-1 * leftArm.geometry.parameters.width / 2, 0, 0));
+    leftWrist.matrix.multiply(new THREE.Matrix4().makeRotationZ(-1 * Math.PI / 12));
+    leftWrist.matrix.multiply(new THREE.Matrix4().makeTranslation(-1 * leftWrist.geometry.parameters.width / 2, 0, 0));
+    leftWrist.updateMatrixWorld();
 
-  rightLeg1.matrixAutoUpdate = false;
-  rightLeg1.matrix.copy(shortBody.matrix);
-  rightLeg1.matrix.multiply(new THREE.Matrix4().makeTranslation(0.5 * (shortBody.geometry.parameters.width - rightLeg1.geometry.parameters.height) - 0.18, 0, 0));
-  rightLeg1.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI / 2 - Math.PI / 12));
-  rightLeg1.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.5 * (shortBody.geometry.parameters.height + rightLeg1.geometry.parameters.width) + 0.1, 0, -0.5 * (shortBody.geometry.parameters.depth - rightLeg1.geometry.parameters.depth)));
-  rightLeg1.updateMatrixWorld();
+    rightWrist.matrixAutoUpdate = false;
+    rightWrist.matrix.copy(rightArm.matrix);
+    rightWrist.matrix.multiply(new THREE.Matrix4().makeTranslation(-1 * rightArm.geometry.parameters.width / 2, 0, 0));
+    rightWrist.matrix.multiply(new THREE.Matrix4().makeRotationZ(-1 * Math.PI / 12));
+    rightWrist.matrix.multiply(new THREE.Matrix4().makeTranslation(-1 * rightWrist.geometry.parameters.width / 2, 0, 0));
+    rightWrist.updateMatrixWorld();
 
-  leftLeg2.matrixAutoUpdate = false;
-  leftLeg2.matrix.copy(leftLeg1.matrix);
-  leftLeg2.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.5 * (leftLeg1.geometry.parameters.width - leftLeg2.geometry.parameters.height), 0, 0));
-  leftLeg2.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI / 8));
-  leftLeg2.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.5 * (leftLeg2.geometry.parameters.width), 0, 0));
-  leftLeg2.updateMatrixWorld();
+    leftLeg1.matrixAutoUpdate = false;
+    leftLeg1.matrix.copy(shortBody.matrix);
+    leftLeg1.matrix.multiply(new THREE.Matrix4().makeTranslation(0.5 * (shortBody.geometry.parameters.width - leftLeg1.geometry.parameters.height) - 0.18, 0, 0));
+    leftLeg1.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI / 2 - Math.PI / 12 - avars[4] * (Math.PI / 180)));
+    leftLeg1.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.5 * (shortBody.geometry.parameters.height + leftLeg1.geometry.parameters.width) + 0.1, 0, 0.5 * (shortBody.geometry.parameters.depth - leftLeg1.geometry.parameters.depth)));
+    leftLeg1.updateMatrixWorld();
 
-  rightLeg2.matrixAutoUpdate = false;
-  rightLeg2.matrix.copy(rightLeg1.matrix);
-  rightLeg2.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.5 * (rightLeg1.geometry.parameters.width - rightLeg2.geometry.parameters.height), 0, 0));
-  rightLeg2.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI / 8));
-  rightLeg2.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.5 * (rightLeg2.geometry.parameters.width), 0, 0));
-  rightLeg2.updateMatrixWorld();
+    rightLeg1.matrixAutoUpdate = false;
+    rightLeg1.matrix.copy(shortBody.matrix);
+    rightLeg1.matrix.multiply(new THREE.Matrix4().makeTranslation(0.5 * (shortBody.geometry.parameters.width - rightLeg1.geometry.parameters.height) - 0.18, 0, 0));
+    rightLeg1.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI / 2 - Math.PI / 12 + avars[4] * (Math.PI / 180)));
+    rightLeg1.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.5 * (shortBody.geometry.parameters.height + rightLeg1.geometry.parameters.width) + 0.1, 0, -0.5 * (shortBody.geometry.parameters.depth - rightLeg1.geometry.parameters.depth)));
+    rightLeg1.updateMatrixWorld();
 
+    leftLeg2.matrixAutoUpdate = false;
+    leftLeg2.matrix.copy(leftLeg1.matrix);
+    leftLeg2.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.5 * (leftLeg1.geometry.parameters.width - leftLeg2.geometry.parameters.height), 0, 0));
+    leftLeg2.matrix.multiply(new THREE.Matrix4().makeRotationZ((Math.PI / 8) + avars[4] * (Math.PI / 180)));
+    leftLeg2.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.5 * (leftLeg2.geometry.parameters.width), 0, 0));
+    leftLeg2.updateMatrixWorld();
+
+    rightLeg2.matrixAutoUpdate = false;
+    rightLeg2.matrix.copy(rightLeg1.matrix);
+    rightLeg2.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.5 * (rightLeg1.geometry.parameters.width - rightLeg2.geometry.parameters.height), 0, 0));
+    rightLeg2.matrix.multiply(new THREE.Matrix4().makeRotationZ((Math.PI / 8) - avars[4] * (Math.PI / 180)));
+    rightLeg2.matrix.multiply(new THREE.Matrix4().makeTranslation(-0.5 * (rightLeg2.geometry.parameters.width), 0, 0));
+    rightLeg2.updateMatrixWorld();
+
+    tail1.matrixAutoUpdate = false;
+    tail1.matrix.copy(shortBody.matrix);
+    tail1.matrix.multiply(new THREE.Matrix4().makeTranslation(shortBody.geometry.parameters.width / 2 - 0.1, 0, 0));
+    tail1.matrix.multiply(new THREE.Matrix4().makeRotationZ(-Math.PI / 12));
+    tail1.matrix.multiply(new THREE.Matrix4().makeTranslation(tail1.geometry.parameters.width / 2, 0, 0));
+    tail1.updateMatrixWorld();
+
+    tail2.matrixAutoUpdate = false;
+    tail2.matrix.copy(tail1.matrix);
+    tail2.matrix.multiply(new THREE.Matrix4().makeTranslation(tail1.geometry.parameters.width / 2 - 0.05, 0, 0));
+    tail2.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI / 12));
+    tail2.matrix.multiply(new THREE.Matrix4().makeTranslation(tail2.geometry.parameters.width / 2 - 0.1, 0, 0));
+    tail2.updateMatrixWorld();
+
+    tail3.matrixAutoUpdate = false;
+    tail3.matrix.copy(tail2.matrix);
+    tail3.matrix.multiply(new THREE.Matrix4().makeTranslation((tail2.geometry.parameters.width) / 2 - 0.05, 0, 0));
+    tail3.matrix.multiply(new THREE.Matrix4().makeRotationZ(Math.PI / 12));
+    tail3.matrix.multiply(new THREE.Matrix4().makeTranslation((tail3.geometry.parameters.width) / 2, -0.005, 0));
+    tail3.updateMatrixWorld();
+  }
+}
+
+function minicooper1SetMatrices(avars) {
+  car = meshes["minicooper1"];
+  /*dinoControl = dinoParts[0];
+  dinoBack = dinoParts[1];
+
+  var tail = new THREE.Vector3( 0, 0, 1 );
+  var head = new THREE.Vector3( 0, 0, 1 );
+  tail.applyMatrix4(new THREE.Matrix4().copyPosition(dinoBack.matrix));
+  head.applyMatrix4(new THREE.Matrix4().copyPosition(dinoControl.matrix));
+  var dir = head.sub(tail);
+  // console.log(dir);*/
+  if (!FLIPPING_IN_PROGRESS) {
+    car.matrixAutoUpdate = false;
+    car.matrix.identity(); // root of the hierarchy
+    car.matrix.multiply(new THREE.Matrix4().makeTranslation(avars[0], avars[1], avars[2]));
+    car.matrix.multiply(new THREE.Matrix4().makeRotationX(-Math.PI/2));
+    car.matrix.multiply(new THREE.Matrix4().makeRotationZ(-Math.PI/2 + avars[3] * Math.PI / 180));
+    car.matrix.multiply(new THREE.Matrix4().makeScale(0.025, 0.025, 0.025));
+    car.updateMatrixWorld();
+  }
 }
 
 
@@ -695,11 +1055,11 @@ function onResourcesLoaded() {
   meshes["armadillo1"] = models.armadillo.mesh.clone();
   meshes["bunny1"] = models.bunny.mesh.clone();
   meshes["teapot1"] = models.teapot.mesh.clone();
-  meshes["minicooper1"] = models.minicooper.mesh.clone();
   meshes["minicooper2"] = models.minicooper.mesh.clone();
   meshes["minicooper3"] = models.minicooper.mesh.clone();
   meshes["trex1"] = models.trex.mesh.clone();
   */
+  meshes["minicooper1"] = models.minicooper.mesh.clone();
   meshes["trex2"] = models.trex.mesh.clone();
 
   // Reposition individual meshes, then add meshes to scene
@@ -718,11 +1078,6 @@ function onResourcesLoaded() {
   meshes["teapot1"].scale.set(0.5, 0.5, 0.5);
   scene.add(meshes["teapot1"]);
 
-  meshes["minicooper1"].position.set(-2, 0, 3);
-  meshes["minicooper1"].scale.set(0.025, 0.025, 0.025);
-  meshes["minicooper1"].rotation.set(-Math.PI/2, 0, Math.PI/2);
-  scene.add(meshes["minicooper1"]);
-
   meshes["minicooper2"].position.set(6, 0, 6);
   meshes["minicooper2"].scale.set(0.025, 0.025, 0.025);
   meshes["minicooper2"].rotation.set(-Math.PI/2, 0, Math.PI/2);
@@ -738,6 +1093,11 @@ function onResourcesLoaded() {
   meshes["trex1"].rotation.set(0,-Math.PI/2, 0);
   scene.add(meshes["trex1"]);
   */
+
+  meshes["minicooper1"].position.set(-2, 0, 3);
+  meshes["minicooper1"].scale.set(0.025, 0.025, 0.025);
+  meshes["minicooper1"].rotation.set(-Math.PI/2, 0, Math.PI/2);
+  scene.add(meshes["minicooper1"]);
 
   // note:  we will be animating trex2, so these transformations will be overwritten anyhow
   meshes["trex2"].position.set(0, 1.9, 3);
