@@ -139,6 +139,7 @@ class KFobj {
 
 // keyframes for the detailed T-rex:   name, time, [x, y, z]
 var trexKFobj = new KFobj(trexSetMatrices);
+/*
 trexKFobj.add(new Keyframe('rest pose', 0.0, [0, 1.9, 0]));
 trexKFobj.add(new Keyframe('rest pose', 1.0, [1, 1.9, 0]));
 // trexKFobj.add(new Keyframe('rest pose', 2.0, [1, 2.9, 0]));
@@ -146,6 +147,36 @@ trexKFobj.add(new Keyframe('rest pose', 1.0, [1, 1.9, 0]));
 trexKFobj.add(new Keyframe('rest pose', 2.0, [1, 4.8, 0]));
 trexKFobj.add(new Keyframe('rest pose', 3.0, [0, 4.8, 0]));
 trexKFobj.add(new Keyframe('rest pose', 4.0, [0, 1.9, 0]));
+*/
+trexKFobj.add(new Keyframe('rest pose', 0.0, [14, 1.9, -6, 0]));
+trexKFobj.add(new Keyframe('rest pose', 0.5, [12, 1.9, -6, 5]));
+trexKFobj.add(new Keyframe('rest pose', 1.0, [10, 1.9, -6, 10]));
+trexKFobj.add(new Keyframe('rest pose', 1.5, [8, 1.9, -6, 15]));
+trexKFobj.add(new Keyframe('rest pose', 2.0, [6, 1.9, -6, 20]));
+trexKFobj.add(new Keyframe('rest pose', 2.5, [4, 1.9, -6, 25]));
+trexKFobj.add(new Keyframe('rest pose', 3.0, [2, 1.9, -6, 30]));
+trexKFobj.add(new Keyframe('rest pose', 3.5, [0, 1.9, -6, 35]));
+trexKFobj.add(new Keyframe('rest pose', 4.0, [-2, 1.9, -6, 40]));
+trexKFobj.add(new Keyframe('rest pose', 4.5, [-4, 1.9, -6, 45]));
+trexKFobj.add(new Keyframe('rest pose', 5.0, [-6, 1.9, -6, 90]));
+
+trexKFobj.add(new Keyframe('rest pose', 5.5, [-6, 1.9, -4, 95]));
+trexKFobj.add(new Keyframe('rest pose', 6.0, [-6, 1.9, -1.5, 100]));
+trexKFobj.add(new Keyframe('rest pose', 6.5, [-6, 1.9, 1, 105]));
+trexKFobj.add(new Keyframe('rest pose', 7.0, [-6, 1.9, 3.5, 110]));
+trexKFobj.add(new Keyframe('rest pose', 7.5, [-6, 1.9, 6, 180]));
+
+trexKFobj.add(new Keyframe('rest pose', 8.0, [-4, 1.9, 6, 185]));
+trexKFobj.add(new Keyframe('rest pose', 8.5, [-2, 1.9, 6, 190]));
+trexKFobj.add(new Keyframe('rest pose', 9.0, [0, 1.9, 6, 195]));
+trexKFobj.add(new Keyframe('rest pose', 9.5, [3, 1.9, 6, 200]));
+trexKFobj.add(new Keyframe('rest pose', 10.0, [6, 1.9, 6, 205]));
+trexKFobj.add(new Keyframe('rest pose', 10.5, [9, 1.9, 6, 270]));
+
+trexKFobj.add(new Keyframe('rest pose', 11.0, [12, 1.9, 3.5, 275]));
+trexKFobj.add(new Keyframe('rest pose', 11.5, [14, 1.9, -2, 285]));
+trexKFobj.add(new Keyframe('rest pose', 12.0, [14, 1.9, -6, 360]));
+
 
 // basic interpolation test
 console.log('kf 0.1 = ', trexKFobj.getAvars(0.1)); // interpolate for t=0.1
@@ -164,34 +195,35 @@ mydinoKFobj.add(new Keyframe('rest pose', 3.0, [8, 1, 60, -60]));
 // keyframs for newmydino: name, time, [long body x, long body y, long body z, rot y, leg theta]
 var newmydinoKFobj = new KFobj(newmydinoSetMatrices);
 newmydinoKFobj.add(new Keyframe('rest pose', 0.0, [6, 3, -6, 0, 0]));
-newmydinoKFobj.add(new Keyframe('rest pose', 0.5, [4, 3, -6, 15, 20]));
-newmydinoKFobj.add(new Keyframe('rest pose', 1.0, [2, 3, -6, 30, 40]));
-newmydinoKFobj.add(new Keyframe('rest pose', 1.5, [0, 3, -6, 45, 60]));
-newmydinoKFobj.add(new Keyframe('rest pose', 2.0, [-2, 3, -6, 60, 40]));
-newmydinoKFobj.add(new Keyframe('rest pose', 2.5, [-4, 3, -6, 75, 20]));
+newmydinoKFobj.add(new Keyframe('rest pose', 0.5, [4, 3, -6, 5, 20]));
+newmydinoKFobj.add(new Keyframe('rest pose', 1.0, [2, 3, -6, 10, 40]));
+newmydinoKFobj.add(new Keyframe('rest pose', 1.5, [0, 3, -6, 15, 60]));
+newmydinoKFobj.add(new Keyframe('rest pose', 2.0, [-2, 3, -6, 20, 40]));
+newmydinoKFobj.add(new Keyframe('rest pose', 2.5, [-4, 3, -6, 25, 20]));
 newmydinoKFobj.add(new Keyframe('rest pose', 3.0, [-6, 3, -6, 90, 0]));
 
-newmydinoKFobj.add(new Keyframe('rest pose', 3.5, [-6, 3, -4, 105, 20]));
-newmydinoKFobj.add(new Keyframe('rest pose', 4.0, [-6, 3, -2, 120, 40]));
-newmydinoKFobj.add(new Keyframe('rest pose', 4.5, [-6, 3, 0, 135, 60]));
-newmydinoKFobj.add(new Keyframe('rest pose', 5.0, [-6, 3, 2, 150, 40]));
-newmydinoKFobj.add(new Keyframe('rest pose', 5.5, [-6, 3, 4, 165, 20]));
+newmydinoKFobj.add(new Keyframe('rest pose', 3.5, [-6, 3, -4, 95, 20]));
+newmydinoKFobj.add(new Keyframe('rest pose', 4.0, [-6, 3, -2, 100, 40]));
+newmydinoKFobj.add(new Keyframe('rest pose', 4.5, [-6, 3, 0, 105, 60]));
+newmydinoKFobj.add(new Keyframe('rest pose', 5.0, [-6, 3, 2, 110, 40]));
+newmydinoKFobj.add(new Keyframe('rest pose', 5.5, [-6, 3, 4, 115, 20]));
 newmydinoKFobj.add(new Keyframe('rest pose', 6.0, [-6, 3, 6, 180, 0]));
 
-newmydinoKFobj.add(new Keyframe('rest pose', 6.5, [-4, 3, 6, 195, 20]));
-newmydinoKFobj.add(new Keyframe('rest pose', 7.0, [-2, 3, 6, 210, 40]));
-newmydinoKFobj.add(new Keyframe('rest pose', 7.5, [0, 3, 6, 225, 60]));
-newmydinoKFobj.add(new Keyframe('rest pose', 8.0, [2, 3, 6, 240, 40]));
-newmydinoKFobj.add(new Keyframe('rest pose', 8.5, [4, 3, 6, 255, 20]));
+newmydinoKFobj.add(new Keyframe('rest pose', 6.5, [-4, 3, 6, 185, 20]));
+newmydinoKFobj.add(new Keyframe('rest pose', 7.0, [-2, 3, 6, 190, 40]));
+newmydinoKFobj.add(new Keyframe('rest pose', 7.5, [0, 3, 6, 195, 60]));
+newmydinoKFobj.add(new Keyframe('rest pose', 8.0, [2, 3, 6, 200, 40]));
+newmydinoKFobj.add(new Keyframe('rest pose', 8.5, [4, 3, 6, 205, 20]));
 newmydinoKFobj.add(new Keyframe('rest pose', 9.0, [6, 3, 6, 270, 0]));
 
-newmydinoKFobj.add(new Keyframe('rest pose', 9.5, [6, 3, 4, 285, 20]));
-newmydinoKFobj.add(new Keyframe('rest pose', 10.0, [6, 3, 2, 300, 40]));
-newmydinoKFobj.add(new Keyframe('rest pose', 10.5, [6, 3, 0, 315, 60]));
-newmydinoKFobj.add(new Keyframe('rest pose', 11.0, [6, 3, -2, 330, 40]));
-newmydinoKFobj.add(new Keyframe('rest pose', 11.5, [6, 3, -4, 345, 20]));
+newmydinoKFobj.add(new Keyframe('rest pose', 9.5, [6, 3, 4, 275, 20]));
+newmydinoKFobj.add(new Keyframe('rest pose', 10.0, [6, 3, 2, 280, 40]));
+newmydinoKFobj.add(new Keyframe('rest pose', 10.5, [6, 3, 0, 285, 60]));
+newmydinoKFobj.add(new Keyframe('rest pose', 11.0, [6, 3, -2, 290, 40]));
+newmydinoKFobj.add(new Keyframe('rest pose', 11.5, [6, 3, -4, 295, 20]));
 newmydinoKFobj.add(new Keyframe('rest pose', 12.0, [6, 3, -6, 360, 0]));
 
+// x, y, z, rotateY
 var minicooper1KFobj = new KFobj(minicooper1SetMatrices);
 minicooper1KFobj.add(new Keyframe('rest pose', 0.0, [10, 0, -6, 0]));
 minicooper1KFobj.add(new Keyframe('rest pose', 0.5, [8, 0, -6, 5]));
@@ -285,7 +317,7 @@ lightMaterial = new THREE.MeshBasicMaterial({
   color: 0x05EDFF
 })
 
-floorTexture = new THREE.ImageUtils.loadTexture('images/floor.jpg');
+floorTexture = new THREE.ImageUtils.loadTexture('images/illusion.png');
 floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
 floorTexture.repeat.set(1, 1);
 floorMaterial = new THREE.MeshBasicMaterial({
@@ -867,7 +899,7 @@ function trexSetMatrices(avars) {
   trex2.matrixAutoUpdate = false; // tell three.js not to over-write our updates
   trex2.matrix.identity();
   trex2.matrix.multiply(new THREE.Matrix4().makeTranslation(avars[0], avars[1], avars[2]));
-  trex2.matrix.multiply(new THREE.Matrix4().makeRotationY(-Math.PI / 2));
+  trex2.matrix.multiply(new THREE.Matrix4().makeRotationY(Math.PI / 2 + avars[3] * Math.PI / 180));
   trex2.matrix.multiply(new THREE.Matrix4().makeScale(1.5, 1.5, 1.5));
   trex2.updateMatrixWorld();
 }
