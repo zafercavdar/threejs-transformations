@@ -52,6 +52,10 @@ var models;
 var body;
 var leftLeg;
 var rightLeg;
+var leftLeftLeg;
+var leftRightLeg;
+var rightLeftLeg;
+var rightRightLeg;
 
 // Custom mydino
 var dinoParts = [];
@@ -194,13 +198,20 @@ console.log('kf 2.9 = ', trexKFobj.getAvars(2.9)); // interpolate for t=2.9
 
 // keyframes for mydino:    name, time, [x, y, theta1, theta2]
 var mydinoKFobj = new KFobj(mydinoSetMatrices);
-mydinoKFobj.add(new Keyframe('rest pose', 0.0, [8, 1, 60, -60]));
-mydinoKFobj.add(new Keyframe('rest pose', 0.5, [8, 1.8, 40, -40]));
-mydinoKFobj.add(new Keyframe('rest pose', 1.0, [8, 1.8, -40, 40]));
-mydinoKFobj.add(new Keyframe('rest pose', 1.5, [8, 1, -60, 60]));
-mydinoKFobj.add(new Keyframe('rest pose', 2.0, [8, 1.8, -40, 40]));
-mydinoKFobj.add(new Keyframe('rest pose', 2.5, [8, 1.8, 40, -40]));
-mydinoKFobj.add(new Keyframe('rest pose', 3.0, [8, 1, 60, -60]));
+mydinoKFobj.add(new Keyframe('rest pose', 0.0, [8, 1.4, 30, -30, 60, -60]));
+mydinoKFobj.add(new Keyframe('rest pose', 0.5, [8, 1.4, 20, -20, 40, -40]));
+mydinoKFobj.add(new Keyframe('rest pose', 1.0, [8, 1.4, 10, -10, 20, -20]));
+mydinoKFobj.add(new Keyframe('rest pose', 1.5, [8, 1.4,  0,   0,  0,   0]));
+mydinoKFobj.add(new Keyframe('rest pose', 2.0, [8, 1.4, -10, 10, -20 , 20]));
+mydinoKFobj.add(new Keyframe('rest pose', 2.5, [8, 1.4, -20,  20, -40, 40]));
+mydinoKFobj.add(new Keyframe('rest pose', 3.0, [8, 1.4, -30,  30, -60, 60]));
+
+mydinoKFobj.add(new Keyframe('rest pose', 3.5, [8, 1.4, -20, 20, -40, 40]));
+mydinoKFobj.add(new Keyframe('rest pose', 4.0, [8, 1.4, -10, 10, -20, 20]));
+mydinoKFobj.add(new Keyframe('rest pose', 4.5, [8, 1.4,  0,   0,   0, 0]));
+mydinoKFobj.add(new Keyframe('rest pose', 5.0, [8, 1.4, 10, -10,  20, -20]));
+mydinoKFobj.add(new Keyframe('rest pose', 5.5, [8, 1.4, 20, -20,  40, -40]));
+mydinoKFobj.add(new Keyframe('rest pose', 6.0, [8, 1.4, 30,  -30, 60, -60]));
 
 // keyframs for newmydino: name, time, [long body x, long body y, long body z, rot y, leg theta]
 var newmydinoKFobj = new KFobj(newmydinoSetMatrices);
@@ -325,6 +336,12 @@ basicMaterial = new THREE.MeshBasicMaterial({
 });
 lightMaterial = new THREE.MeshBasicMaterial({
   color: 0xDC143C
+})
+lightWoodMaterial = new THREE.MeshBasicMaterial({
+  color: 0xF4A460
+})
+darkWoodMaterial = new THREE.MeshBasicMaterial({
+  color: 0x8B4513
 })
 
 floorTexture = new THREE.ImageUtils.loadTexture('images/illusion.png');
@@ -554,15 +571,25 @@ function initObjects() {
 
 
   // body
-  bodyGeometry = new THREE.BoxGeometry(0.25, 0.8, 0.5); // width, height, depth
+  bodyGeometry = new THREE.BoxGeometry(0.25, 2.8, 0.5); // width, height, depth
   // legGeometry = new THREE.BoxGeometry(0.15, 1.0, 0.15); // width, height, depth
   legGeometry = new THREE.BoxGeometry(0.15, 2.0, 0.15); // width, height, depth
-  body = new THREE.Mesh(bodyGeometry, dinoGreenMaterial);
-  leftLeg = new THREE.Mesh(legGeometry, dinoGreenMaterial);
-  rightLeg = new THREE.Mesh(legGeometry, dinoGreenMaterial);
+  leglegGeometry = new THREE.BoxGeometry(0.15, 0.8, 0.15);
+  body = new THREE.Mesh(bodyGeometry, darkWoodMaterial);
+  leftLeg = new THREE.Mesh(legGeometry, lightWoodMaterial);
+  rightLeg = new THREE.Mesh(legGeometry, lightWoodMaterial);
+  leftLeftLeg = new THREE.Mesh(leglegGeometry, dinoGreenMaterial);
+  leftRightLeg = new THREE.Mesh(leglegGeometry, dinoGreenMaterial);
+  rightLeftLeg = new THREE.Mesh(leglegGeometry, dinoGreenMaterial);
+  rightRightLeg = new THREE.Mesh(leglegGeometry, dinoGreenMaterial);
+
   scene.add(body);
   scene.add(leftLeg);
   scene.add(rightLeg);
+  scene.add(leftLeftLeg);
+  scene.add(leftRightLeg);
+  scene.add(rightLeftLeg);
+  scene.add(rightRightLeg);
 
   var ballGeometry = new THREE.SphereGeometry(BALL_RADIUS, 32, 32);
   ball = new THREE.Mesh(ballGeometry, dinoDarkGreenMaterial);
@@ -977,17 +1004,45 @@ function mydinoSetMatrices(avars) {
 
   leftLeg.matrixAutoUpdate = false;
   leftLeg.matrix.copy(body.matrix); // start with the parent's matrix
-  leftLeg.matrix.multiply(new THREE.Matrix4().makeTranslation(0.0, -0.4, -0.125)); // translate to hip
+  leftLeg.matrix.multiply(new THREE.Matrix4().makeTranslation(0.0, 1.4, -0.125)); // translate to hip
   leftLeg.matrix.multiply(new THREE.Matrix4().makeRotationZ(avars[2] * Math.PI / 180)); // rotate about hip
-  leftLeg.matrix.multiply(new THREE.Matrix4().makeTranslation(0, -1.0, 0)); // translate to center of upper leg
+  leftLeg.matrix.multiply(new THREE.Matrix4().makeTranslation(0, 1.0, 0)); // translate to center of upper leg
   leftLeg.updateMatrixWorld();
 
   rightLeg.matrixAutoUpdate = false;
   rightLeg.matrix.copy(body.matrix); // start with the parent's matrix
-  rightLeg.matrix.multiply(new THREE.Matrix4().makeTranslation(0.0, -0.4, 0.125)); // translate to hip
+  rightLeg.matrix.multiply(new THREE.Matrix4().makeTranslation(0.0, 1.4, 0.125)); // translate to hip
   rightLeg.matrix.multiply(new THREE.Matrix4().makeRotationZ(avars[3] * Math.PI / 180)); // rotate about hip
-  rightLeg.matrix.multiply(new THREE.Matrix4().makeTranslation(0, -1.0, 0)); // translate to center of upper leg
+  rightLeg.matrix.multiply(new THREE.Matrix4().makeTranslation(0, 1.0, 0)); // translate to center of upper leg
   rightLeg.updateMatrixWorld();
+
+  leftLeftLeg.matrixAutoUpdate = false;
+  leftLeftLeg.matrix.copy(leftLeg.matrix);
+  leftLeftLeg.matrix.multiply(new THREE.Matrix4().makeTranslation(0.0, leftLeg.geometry.parameters.height / 2, 0));
+  leftLeftLeg.matrix.multiply(new THREE.Matrix4().makeRotationX(avars[4] * Math.PI / 180));
+  leftLeftLeg.matrix.multiply(new THREE.Matrix4().makeTranslation(0.0, leftLeftLeg.geometry.parameters.height / 2, 0));
+  leftLeftLeg.updateMatrixWorld();
+
+  leftRightLeg.matrixAutoUpdate = false;
+  leftRightLeg.matrix.copy(leftLeg.matrix);
+  leftRightLeg.matrix.multiply(new THREE.Matrix4().makeTranslation(0.0, leftLeg.geometry.parameters.height / 2, 0));
+  leftRightLeg.matrix.multiply(new THREE.Matrix4().makeRotationX(avars[5] * Math.PI / 180));
+  leftRightLeg.matrix.multiply(new THREE.Matrix4().makeTranslation(0.0, leftRightLeg.geometry.parameters.height / 2, 0));
+  leftRightLeg.updateMatrixWorld();
+
+  rightLeftLeg.matrixAutoUpdate = false;
+  rightLeftLeg.matrix.copy(rightLeg.matrix);
+  rightLeftLeg.matrix.multiply(new THREE.Matrix4().makeTranslation(0.0, rightLeg.geometry.parameters.height / 2, 0));
+  rightLeftLeg.matrix.multiply(new THREE.Matrix4().makeRotationX(avars[4] * Math.PI / 180));
+  rightLeftLeg.matrix.multiply(new THREE.Matrix4().makeTranslation(0.0, rightLeftLeg.geometry.parameters.height / 2, 0));
+  rightLeftLeg.updateMatrixWorld();
+
+  rightRightLeg.matrixAutoUpdate = false;
+  rightRightLeg.matrix.copy(rightLeg.matrix);
+  rightRightLeg.matrix.multiply(new THREE.Matrix4().makeTranslation(0.0, rightLeg.geometry.parameters.height / 2, 0));
+  rightRightLeg.matrix.multiply(new THREE.Matrix4().makeRotationX(avars[5] * Math.PI / 180));
+  rightRightLeg.matrix.multiply(new THREE.Matrix4().makeTranslation(0.0, rightRightLeg.geometry.parameters.height / 2, 0));
+  rightRightLeg.updateMatrixWorld();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////

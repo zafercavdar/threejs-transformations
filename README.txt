@@ -28,3 +28,4 @@ Implemented features in (h):
 Additional work that could be considered as bonus (i):
 - complete more of the suggested ideas above
 - motion of Space-X rocket
+- create a plant or tree with animated branches or leaves
