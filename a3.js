@@ -73,6 +73,10 @@ var tail1;
 var tail2;
 var tail3;
 
+var ball;
+var rocketBody;
+var rocketHead;
+
 
 var loadingManager = null;
 var RESOURCES_LOADED = false;
@@ -82,6 +86,12 @@ var TIME_CONSTANT = 1;
 var LIGHT_INTENSITY = 1;
 var FLIPPING_IN_PROGRESS = false;
 var FLIP_DEGREE = 0;
+
+var BALL_RADIUS = 0.4
+var JUMP_MAX = 10;
+var JUMP_MIN = 1.5 * BALL_RADIUS;
+var JUMP_IN_PROGRESS = false;
+var JUMP_DIR = 1;
 
 ////////////////////////////////////////////////////////////
 // Keyframe   and   KFobj  classes
@@ -314,7 +324,7 @@ basicMaterial = new THREE.MeshBasicMaterial({
   color: 0xff0000
 });
 lightMaterial = new THREE.MeshBasicMaterial({
-  color: 0x05EDFF
+  color: 0xDC143C
 })
 
 floorTexture = new THREE.ImageUtils.loadTexture('images/illusion.png');
@@ -415,7 +425,10 @@ function updateLights() {
   light2.intensity = LIGHT_INTENSITY;
   light3.intensity = LIGHT_INTENSITY;
   light4.intensity = LIGHT_INTENSITY;
-
+  var spheres = [sphere , sphere2, sphere3, sphere4];
+  for (var s in spheres) {
+    spheres[s].material.color = new THREE.Color(LIGHT_INTENSITY, 0.08, 0.235);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -551,6 +564,20 @@ function initObjects() {
   scene.add(leftLeg);
   scene.add(rightLeg);
 
+  var ballGeometry = new THREE.SphereGeometry(BALL_RADIUS, 32, 32);
+  ball = new THREE.Mesh(ballGeometry, dinoDarkGreenMaterial);
+  ball.position.set(0, ball.geometry.parameters.radius, 0);
+  scene.add(ball);
+
+  var rocketBodyGeometry = new THREE.CylinderGeometry(BALL_RADIUS, BALL_RADIUS, 3 * BALL_RADIUS, 32, 32);
+  var rocketHeadGeometry = new THREE.CylinderGeometry(0, BALL_RADIUS, BALL_RADIUS * 2, 32);
+  rocketBody = new THREE.Mesh(rocketBodyGeometry, dinoDarkGreenMaterial);
+  rocketHead = new THREE.Mesh(rocketHeadGeometry, dinoDarkGreenMaterial);
+  rocketBody.position.set(0, 1.5 * BALL_RADIUS, 0);
+  rocketHead.position.set(0, 4 * BALL_RADIUS, 0);
+  scene.add(rocketHead);
+  scene.add(rocketBody);
+
   // new mydino
   longBodyGeometry = new THREE.BoxGeometry(3, 1.2, 0.5);
   shortBodyGeometry = new THREE.BoxGeometry(1.5, 1.2, 0.5);
@@ -675,6 +702,8 @@ function checkKeyboard() {
     updateLights();
   } else if(keyboard.pressed("f")) {
     FLIPPING_IN_PROGRESS = true;
+  } else if (keyboard.pressed("j")) {
+    JUMP_IN_PROGRESS = true;
   }
 }
 
@@ -730,6 +759,9 @@ function update() {
 
   if (FLIPPING_IN_PROGRESS) {
     flipDino(newmydinoAvars);
+  }
+  if (JUMP_IN_PROGRESS) {
+    sendRocket();
   }
 
   requestAnimationFrame(update);
@@ -864,6 +896,31 @@ function flipDino(avars) {
   }
 }
 
+
+function sendRocket() {
+  var next = rocketBody.position.y + 0.03;
+  var nextHead = rocketHead.position.y + 0.03;
+
+  var prev = rocketBody.position.y - 0.03;
+  var prevHead = rocketHead.position.y - 0.03;
+
+  if (JUMP_DIR == 1 && next < JUMP_MAX) {
+    rocketBody.position.setY(next);
+    rocketHead.position.setY(nextHead);
+  } else if (JUMP_DIR == 1 && next >= JUMP_MAX) {
+    rocketBody.position.setY(JUMP_MAX);
+    rocketHead.position.setY(JUMP_MAX + 2.5 * BALL_RADIUS);
+    JUMP_DIR = -1;
+  } else if (JUMP_DIR == -1 && prev > JUMP_MIN) {
+    rocketBody.position.setY(prev);
+    rocketHead.position.setY(prevHead);
+  } else if (JUMP_DIR == -1 && prev <= JUMP_MIN) {
+    rocketBody.position.setY(JUMP_MIN);
+    rocketHead.position.setY(JUMP_MIN + 2.5 * BALL_RADIUS);
+    JUMP_DIR = 1;
+    JUMP_IN_PROGRESS = false;
+  }
+}
 ///////////////////////////////////////////////////////////////////////////////////////
 //  laserUpdate()
 ///////////////////////////////////////////////////////////////////////////////////////
